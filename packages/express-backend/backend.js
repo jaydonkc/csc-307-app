@@ -35,8 +35,18 @@ const users = {
 
 app.use(express.json());
 
-const findUserByName = (name) => {
-  return users.users_list.filter((user) => user.name === name);
+const findUsers = ({ name, job }) => {
+  return users.users_list.filter((user) => {
+    if (name !== undefined && user.name !== name) {
+      return false;
+    }
+
+    if (job !== undefined && user.job !== job) {
+      return false;
+    }
+
+    return true;
+  });
 };
 
 const findUserById = (id) => {
@@ -48,16 +58,27 @@ const addUser = (user) => {
   return user;
 };
 
+const deleteUserById = (id) => {
+  const userIndex = users.users_list.findIndex((user) => user.id === id);
+
+  if (userIndex === -1) {
+    return undefined;
+  }
+
+  const [deletedUser] = users.users_list.splice(userIndex, 1);
+  return deletedUser;
+};
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
 app.get("/users", (req, res) => {
-  const name = req.query.name;
+  const { name, job } = req.query;
 
-  if (name !== undefined) {
+  if (name !== undefined || job !== undefined) {
     const result = {
-      users_list: findUserByName(name),
+      users_list: findUsers({ name, job }),
     };
 
     res.send(result);
@@ -84,6 +105,18 @@ app.get("/users/:id", (req, res) => {
   }
 
   res.send(result);
+});
+
+app.delete("/users/:id", (req, res) => {
+  const id = req.params.id;
+  const deletedUser = deleteUserById(id);
+
+  if (deletedUser === undefined) {
+    res.status(404).send("Resource not found.");
+    return;
+  }
+
+  res.send(deletedUser);
 });
 
 app.listen(port, () => {
