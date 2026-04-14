@@ -4,7 +4,10 @@
   "description": "csc307",
   "main": "index.js",
   "scripts": {
+    "dev": "npm run dev --workspace=express-backend",
     "start": "npm run start --workspace=react-frontend",
+    "start:backend": "npm run start --workspace=express-backend",
+    "start:frontend": "npm run start --workspace=react-frontend",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
