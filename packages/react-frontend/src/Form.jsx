@@ -17,8 +17,12 @@ function Form(props) {
   }
 
   function submitForm() {
-    props.handleSubmit(person);
-    setPerson({ name: "", job: "" });
+    props
+      .handleSubmit(person)
+      .then(() => {
+        setPerson({ name: "", job: "" });
+      })
+      .catch(() => {});
   }
 
   return (

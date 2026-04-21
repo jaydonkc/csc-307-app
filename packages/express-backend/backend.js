@@ -1,4 +1,5 @@
 // backend.js
+import cors from "cors";
 import express from "express";
 
 const app = express();
@@ -33,6 +34,7 @@ const users = {
   ],
 };
 
+app.use(cors());
 app.use(express.json());
 
 const findUsers = ({ name, job }) => {
@@ -53,9 +55,25 @@ const findUserById = (id) => {
   return users.users_list.find((user) => user.id === id);
 };
 
+const generateId = () => {
+  let id = "";
+
+  do {
+    id = Math.random().toString(36).slice(2, 8);
+  } while (findUserById(id) !== undefined);
+
+  return id;
+};
+
 const addUser = (user) => {
-  users.users_list.push(user);
-  return user;
+  const userToAdd = {
+    id: generateId(),
+    name: user.name,
+    job: user.job,
+  };
+
+  users.users_list.push(userToAdd);
+  return userToAdd;
 };
 
 const deleteUserById = (id) => {
@@ -91,8 +109,8 @@ app.get("/users", (req, res) => {
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
 
-  addUser(userToAdd);
-  res.send();
+  const createdUser = addUser(userToAdd);
+  res.status(201).send(createdUser);
 });
 
 app.get("/users/:id", (req, res) => {
@@ -116,7 +134,7 @@ app.delete("/users/:id", (req, res) => {
     return;
   }
 
-  res.send(deletedUser);
+  res.status(204).send();
 });
 
 app.listen(port, () => {
