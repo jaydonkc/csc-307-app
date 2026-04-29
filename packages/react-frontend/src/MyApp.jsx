@@ -57,7 +57,7 @@ function MyApp() {
     deleteUser(id)
       .then(() => {
         setCharacters((currentCharacters) => {
-          return currentCharacters.filter((character) => character.id !== id);
+          return currentCharacters.filter((character) => character._id !== id);
         });
       })
       .catch((error) => {
