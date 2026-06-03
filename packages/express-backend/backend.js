@@ -36,9 +36,7 @@ const mongoConnectionWithDatabase = buildMongoConnectionString(
   MONGO_CONNECTION_STRING,
 );
 
-mongoose
-  .connect(mongoConnectionWithDatabase)
-  .catch((error) => console.log(error));
+mongoose.connect(mongoConnectionWithDatabase).catch((error) => console.log(error));
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
